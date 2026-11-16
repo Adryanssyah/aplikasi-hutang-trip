@@ -1,0 +1,329 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Patungan Trip</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* Layout: satu kolom seperti buku kas. Anggota, lalu tiap tempat, lalu hasil hutang-piutang di bawah. */
+:root{
+  --bg:#f1f5f4; --surface:#ffffff; --fg:#14211f; --muted:#5b6d6a; --line:#d6e0de;
+  --accent:#0b6b5f; --accent-fg:#ffffff; --soft:#e4efed; --plus:#0b7a4b; --minus:#b4321f;
+  --font-body:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-display:'Space Grotesk','Inter',system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1615; --surface:#162120; --fg:#e5eeec; --muted:#8fa3a0; --line:#263634;
+    --accent:#3cc2aa; --accent-fg:#06201b; --soft:#1c2c2a; --plus:#4cd18e; --minus:#ff8f7c;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1615; --surface:#162120; --fg:#e5eeec; --muted:#8fa3a0; --line:#263634;
+  --accent:#3cc2aa; --accent-fg:#06201b; --soft:#1c2c2a; --plus:#4cd18e; --minus:#ff8f7c;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  background:var(--bg); color:var(--fg); font-family:var(--font-body); font-size:15px; line-height:1.5;
+  padding-block:20px 48px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+}
+main{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1,h2{font-family:var(--font-display);margin:0;text-wrap:balance}
+h1{font-size:26px;letter-spacing:-.01em}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:500}
+.sub{margin:4px 0 0;color:var(--muted);font-size:14px}
+section{display:flex;flex-direction:column;gap:10px}
+.sechead{display:flex;align-items:center;justify-content:space-between;gap:10px}
+input,select,button{font:inherit;color:inherit}
+input,select{
+  background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 10px;min-width:0;width:100%;
+}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+input[type=number]{-moz-appearance:textfield;text-align:right;font-variant-numeric:tabular-nums}
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+button{cursor:pointer;border-radius:8px;border:1px solid var(--line);background:var(--surface);padding:8px 12px}
+button.primary{background:var(--accent);color:var(--accent-fg);border-color:var(--accent);font-weight:600}
+button.ghost{border-color:transparent;background:transparent;color:var(--muted);padding:6px 8px}
+button.ghost:hover{color:var(--fg)}
+.members{display:flex;flex-wrap:wrap;gap:8px}
+.member{display:flex;align-items:center;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:3px 4px 3px 4px;flex:1 1 140px;max-width:100%}
+.member input{border:0;background:transparent;font-weight:500;padding:6px 8px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px}
+.cardtop{display:flex;gap:8px;align-items:center}
+.cardtop .place{font-weight:600;font-family:var(--font-display);font-size:16px}
+.payer{display:flex;align-items:center;gap:10px}
+.payer label{color:var(--muted);font-size:13px;white-space:nowrap}
+.payer select{max-width:200px}
+.rows{display:flex;flex-direction:column;gap:6px}
+.row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,150px);align-items:center;gap:10px}
+.row .who{overflow-wrap:anywhere}
+.row .tag{font-size:11px;color:var(--accent);background:var(--soft);border-radius:99px;padding:1px 7px;margin-left:6px;white-space:nowrap}
+.cardfoot{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding-top:10px;color:var(--muted);font-size:14px}
+.num{font-variant-numeric:tabular-nums}
+.cardfoot strong{color:var(--fg)}
+.result{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.line{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.line .name{overflow-wrap:anywhere}
+.pos{color:var(--plus);font-weight:600}
+.neg{color:var(--minus);font-weight:600}
+.zero{color:var(--muted)}
+.pay{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 12px;border-radius:10px;background:var(--soft)}
+.pay .amt{margin-left:auto;font-weight:700;font-family:var(--font-display);font-size:17px}
+.pay .arrow{color:var(--muted)}
+details summary{cursor:pointer;color:var(--muted);font-size:14px}
+details .line{padding:4px 0;font-size:14px}
+.note{color:var(--muted);font-size:13px}
+.empty{color:var(--muted);text-align:center;padding:6px 0}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<main>
+  <header>
+    <h1>Patungan Trip</h1>
+    <p class="sub">Isi siapa yang bayar dan jatah tiap orang. Hutang piutang terhitung otomatis di bawah.</p>
+  </header>
+
+  <section>
+    <div class="sechead"><h2>Anggota</h2><button id="addMember" class="ghost" type="button">+ Tambah</button></div>
+    <div class="members" id="members"></div>
+  </section>
+
+  <section>
+    <div class="sechead"><h2>Tempat</h2></div>
+    <div id="trips" style="display:flex;flex-direction:column;gap:12px"></div>
+    <div class="actions">
+      <button id="addTrip" class="primary" type="button">+ Tambah tempat</button>
+      <button id="reset" type="button">Kosongkan semua</button>
+    </div>
+    <p class="note" id="sampleNote">Data awal ini contoh. Ganti nama dan angkanya, atau tekan Kosongkan semua.</p>
+  </section>
+
+  <section>
+    <div class="sechead"><h2>Hutang piutang</h2></div>
+    <div class="result" id="result"></div>
+  </section>
+</main>
+
+<script>
+(function(){
+  var KEY='patungan-trip-v1';
+  var n=0;
+  function nid(){ n++; return 'i'+Date.now().toString(36)+n+Math.random().toString(36).slice(2,4); }
+  function fmt(v){ return 'Rp '+Math.round(v).toLocaleString('id-ID'); }
+
+  function sample(){
+    var k=nid(), f=nid(), a=nid();
+    var s={members:[{id:k,name:'Khalid'},{id:f,name:'Fajril'},{id:a,name:'Adryan'}],trips:[]};
+    var t1={id:nid(),place:'Makan siang hari 1',payer:k,amt:{}};
+    t1.amt[k]=90000; t1.amt[a]=80000; t1.amt[f]=30000;
+    var t2={id:nid(),place:'Makan malam hari 1',payer:a,amt:{}};
+    t2.amt[k]=60000; t2.amt[a]=40000; t2.amt[f]=50000;
+    s.trips=[t1,t2]; s.sample=true;
+    return s;
+  }
+  function blank(){
+    var a=nid(), b=nid(), c=nid();
+    return {members:[{id:a,name:'Anggota 1'},{id:b,name:'Anggota 2'},{id:c,name:'Anggota 3'}],
+      trips:[{id:nid(),place:'Tempat 1',payer:a,amt:{}}],sample:false};
+  }
+  var state;
+  try{ var raw=localStorage.getItem(KEY); if(raw){ state=JSON.parse(raw); } }catch(e){}
+  if(!state || !state.members || !state.trips){ state=sample(); }
+
+  function save(){ try{ localStorage.setItem(KEY,JSON.stringify(state)); }catch(e){} }
+  function h(tag,attrs){
+    var e=document.createElement(tag);
+    if(attrs){ for(var k in attrs){ if(k==='text'){ e.textContent=attrs[k]; } else if(k==='class'){ e.className=attrs[k]; } else { e.setAttribute(k,attrs[k]); } } }
+    for(var i=2;i<arguments.length;i++){ if(arguments[i]) e.appendChild(arguments[i]); }
+    return e;
+  }
+  function nameOf(id){ for(var i=0;i<state.members.length;i++){ if(state.members[i].id===id) return state.members[i].name||'(tanpa nama)'; } return '?'; }
+  function tripTotal(t){ var s=0; state.members.forEach(function(m){ s+=Number(t.amt[m.id])||0; }); return s; }
+
+  var elMembers=document.getElementById('members');
+  var elTrips=document.getElementById('trips');
+  var elResult=document.getElementById('result');
+  var elNote=document.getElementById('sampleNote');
+
+  function renderMembers(){
+    elMembers.innerHTML='';
+    state.members.forEach(function(m){
+      var inp=h('input',{type:'text',id:'nm-'+m.id,'aria-label':'Nama anggota',maxlength:'24'});
+      inp.value=m.name;
+      inp.addEventListener('input',function(){
+        m.name=inp.value; save();
+        document.querySelectorAll('[data-nm="'+m.id+'"]').forEach(function(x){ x.textContent=nameOf(m.id); });
+        recalc();
+      });
+      var del=h('button',{type:'button',class:'ghost','aria-label':'Hapus anggota',text:'×'});
+      del.addEventListener('click',function(){
+        if(state.members.length<=2) return;
+        state.members=state.members.filter(function(x){ return x.id!==m.id; });
+        state.trips.forEach(function(t){ delete t.amt[m.id]; if(t.payer===m.id) t.payer=state.members[0].id; });
+        save(); renderAll();
+      });
+      var box=h('div',{class:'member'},inp,state.members.length>2?del:null);
+      elMembers.appendChild(box);
+    });
+  }
+
+  function renderTrips(){
+    elTrips.innerHTML='';
+    state.trips.forEach(function(t){
+      var place=h('input',{type:'text',class:'place',id:'pl-'+t.id,placeholder:'Nama tempat, mis. Makan siang','aria-label':'Nama tempat'});
+      place.value=t.place;
+      place.addEventListener('input',function(){ t.place=place.value; save(); });
+      var del=h('button',{type:'button',class:'ghost','aria-label':'Hapus tempat',text:'Hapus'});
+      del.addEventListener('click',function(){
+        state.trips=state.trips.filter(function(x){ return x.id!==t.id; });
+        save(); renderAll();
+      });
+
+      var sel=h('select',{id:'py-'+t.id,'aria-label':'Yang bayar'});
+      state.members.forEach(function(m){
+        var o=h('option',{value:m.id,'data-nm':m.id,text:nameOf(m.id)});
+        if(m.id===t.payer) o.selected=true;
+        sel.appendChild(o);
+      });
+      var tot=h('strong',{class:'num',text:fmt(tripTotal(t))});
+      sel.addEventListener('change',function(){
+        t.payer=sel.value; save();
+        card.querySelectorAll('.tag').forEach(function(x){ x.hidden=(x.getAttribute('data-for')!==t.payer); });
+        recalc();
+      });
+
+      var rows=h('div',{class:'rows'});
+      state.members.forEach(function(m){
+        var tag=h('span',{class:'tag','data-for':m.id,text:'bayar'});
+        tag.hidden=(m.id!==t.payer);
+        var who=h('div',{class:'who'},h('span',{'data-nm':m.id,text:nameOf(m.id)}),tag);
+        var amt=h('input',{type:'number',inputmode:'numeric',min:'0',step:'1000',id:'a-'+t.id+'-'+m.id,placeholder:'0','aria-label':'Belanja '+nameOf(m.id)});
+        if(t.amt[m.id]) amt.value=t.amt[m.id];
+        amt.addEventListener('input',function(){
+          var v=parseFloat(amt.value);
+          t.amt[m.id]=isFinite(v)&&v>0?v:0;
+          tot.textContent=fmt(tripTotal(t)); save(); recalc();
+        });
+        rows.appendChild(h('div',{class:'row'},who,amt));
+      });
+
+      var card=h('div',{class:'card'},
+        h('div',{class:'cardtop'},place,del),
+        h('div',{class:'payer'},h('label',{for:'py-'+t.id,text:'Yang bayar'}),sel),
+        rows,
+        h('div',{class:'cardfoot'},h('span',{text:'Total bill'}),tot)
+      );
+      elTrips.appendChild(card);
+    });
+    if(!state.trips.length){ elTrips.appendChild(h('p',{class:'empty',text:'Belum ada tempat. Tekan Tambah tempat.'})); }
+  }
+
+  function compute(){
+    var bal={}, owe={}, spent=0;
+    state.members.forEach(function(m){ bal[m.id]=0; owe[m.id]={}; });
+    state.trips.forEach(function(t){
+      if(!(t.payer in bal)) return;
+      state.members.forEach(function(m){
+        var v=Number(t.amt[m.id])||0;
+        if(!v) return;
+        spent+=v;
+        if(m.id===t.payer) return;
+        bal[m.id]-=v; bal[t.payer]+=v;
+        owe[m.id][t.payer]=(owe[m.id][t.payer]||0)+v;
+      });
+    });
+    // transfer paling sedikit
+    var cr=[], db=[];
+    state.members.forEach(function(m){
+      var b=Math.round(bal[m.id]);
+      if(b>0) cr.push({id:m.id,v:b}); else if(b<0) db.push({id:m.id,v:-b});
+    });
+    cr.sort(function(x,y){ return y.v-x.v; }); db.sort(function(x,y){ return y.v-x.v; });
+    var tr=[], i=0, j=0;
+    while(i<db.length && j<cr.length){
+      var x=Math.min(db[i].v,cr[j].v);
+      if(x>0) tr.push({from:db[i].id,to:cr[j].id,v:x});
+      db[i].v-=x; cr[j].v-=x;
+      if(db[i].v===0) i++;
+      if(cr[j].v===0) j++;
+    }
+    // hutang bersih per pasangan
+    var pairs=[];
+    for(var a=0;a<state.members.length;a++){
+      for(var b=a+1;b<state.members.length;b++){
+        var A=state.members[a].id, B=state.members[b].id;
+        var d=(owe[A][B]||0)-(owe[B][A]||0);
+        if(d>0) pairs.push({from:A,to:B,v:d}); else if(d<0) pairs.push({from:B,to:A,v:-d});
+      }
+    }
+    return {bal:bal,tr:tr,pairs:pairs,spent:spent};
+  }
+
+  function recalc(){
+    var r=compute();
+    elResult.innerHTML='';
+
+    elResult.appendChild(h('div',{class:'line'},h('span',{class:'zero',text:'Total pengeluaran semua tempat'}),h('strong',{class:'num',text:fmt(r.spent)})));
+
+    elResult.appendChild(h('h2',{text:'Cara bayar paling singkat'}));
+    if(!r.tr.length){
+      elResult.appendChild(h('p',{class:'empty',text:r.spent?'Semua sudah impas.':'Isi belanjaan di atas, hasilnya muncul di sini.'}));
+    }
+    r.tr.forEach(function(t){
+      elResult.appendChild(h('div',{class:'pay'},
+        h('strong',{text:nameOf(t.from)}), h('span',{class:'arrow',text:'bayar ke'}), h('strong',{text:nameOf(t.to)}),
+        h('span',{class:'amt num',text:fmt(t.v)})));
+    });
+
+    elResult.appendChild(h('h2',{text:'Posisi tiap orang'}));
+    state.members.forEach(function(m){
+      var b=Math.round(r.bal[m.id]);
+      var cls=b>0?'pos':(b<0?'neg':'zero');
+      var txt=b>0?('Piutang '+fmt(b)):(b<0?('Hutang '+fmt(-b)):'Impas');
+      elResult.appendChild(h('div',{class:'line'},h('span',{class:'name',text:nameOf(m.id)}),h('span',{class:cls+' num',text:txt})));
+    });
+
+    if(r.pairs.length){
+      var d=h('details',null,h('summary',{text:'Lihat hutang per pasangan'}));
+      r.pairs.forEach(function(p){
+        d.appendChild(h('div',{class:'line'},h('span',{text:nameOf(p.from)+' hutang ke '+nameOf(p.to)}),h('span',{class:'num',text:fmt(p.v)})));
+      });
+      d.appendChild(h('p',{class:'note',text:'Ini hutang yang sudah saling dikurangi per dua orang. Kalau mau lebih sedikit transfer, pakai cara bayar paling singkat di atas.'}));
+      elResult.appendChild(d);
+    }
+    elNote.hidden=!state.sample;
+  }
+
+  function renderAll(){ renderMembers(); renderTrips(); recalc(); }
+
+  document.getElementById('addMember').addEventListener('click',function(){
+    if(state.members.length>=10) return;
+    state.members.push({id:nid(),name:'Anggota '+(state.members.length+1)});
+    save(); renderAll();
+  });
+  document.getElementById('addTrip').addEventListener('click',function(){
+    state.trips.push({id:nid(),place:'',payer:state.members[0].id,amt:{}});
+    save(); renderAll();
+    var last=elTrips.querySelector('.card:last-child .place'); if(last) last.focus();
+  });
+  var resetBtn=document.getElementById('reset'), armed=false, timer=null;
+  resetBtn.addEventListener('click',function(){
+    if(!armed){
+      armed=true; resetBtn.textContent='Yakin? Tekan lagi untuk hapus';
+      timer=setTimeout(function(){ armed=false; resetBtn.textContent='Kosongkan semua'; },3500);
+      return;
+    }
+    clearTimeout(timer); armed=false; resetBtn.textContent='Kosongkan semua';
+    state=blank(); save(); renderAll();
+  });
+  // data contoh dianggap contoh sampai ada perubahan
+  document.addEventListener('input',function(){ if(state.sample){ state.sample=false; elNote.hidden=true; save(); } });
+
+  renderAll();
+})();
+</script>
+
+</body></html>
